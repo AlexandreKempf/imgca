@@ -16,6 +16,7 @@ import os
 #                          BASIC GENERAL FUNCTIONS                             #
 ################################################################################
 
+
 def exist(dir,file,iter=10):
     """
     Is there FILE in DIR or in its ITER subfolder
