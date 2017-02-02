@@ -265,33 +265,33 @@ def applyTransform(img,M):
     return img
 
 
-dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/M07/20160106"
-data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-data = smooth(data,2,inputAxis("time"))
-data = smooth(data,2,inputAxis("px"))
-data = smooth(data,2,inputAxis("py"))
-data = dRoverR(data)
-data, vessels = focusROI(data, vessels)
-
-dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
-data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-data2 = smooth(data2,2,inputAxis("time"))
-data2 = smooth(data2,2,inputAxis("px"))
-data2 = smooth(data2,2,inputAxis("py"))
-data2 = dRoverR(data2)
-data2, vessels2 = focusROI(data2, vessels2)
-
-plotActivity(data, stim, vessels,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
-plotActivity(data2, stim2, vessels2,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
-
-M = findTransform(data, vessels, data2, vessels2, shear=False, scale=False)
-
-tono1 = estimateTonotopy(data, vessels)
-tono2 = estimateTonotopy(data2, vessels2)
-tono2 = applyTransform(tono2,M)
-
-ax = plt.subplot(211);
-plt.imshow(tono1, interpolation="none", origin="lower")
-plt.subplot(212,sharex=ax,sharey=ax);
-plt.imshow(tono2, interpolation="none", origin="lower");
-plt.show()
+# dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/M07/20160106"
+# data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
+# data = smooth(data,2,inputAxis("time"))
+# data = smooth(data,2,inputAxis("px"))
+# data = smooth(data,2,inputAxis("py"))
+# data = dRoverR(data)
+# data, vessels = focusROI(data, vessels)
+#
+# dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
+# data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
+# data2 = smooth(data2,2,inputAxis("time"))
+# data2 = smooth(data2,2,inputAxis("px"))
+# data2 = smooth(data2,2,inputAxis("py"))
+# data2 = dRoverR(data2)
+# data2, vessels2 = focusROI(data2, vessels2)
+#
+# plotActivity(data, stim, vessels,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
+# plotActivity(data2, stim2, vessels2,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
+#
+# M = findTransform(data, vessels, data2, vessels2, shear=False, scale=False)
+#
+# tono1 = estimateTonotopy(data, vessels)
+# tono2 = estimateTonotopy(data2, vessels2)
+# tono2 = applyTransform(tono2,M)
+#
+# ax = plt.subplot(211);
+# plt.imshow(tono1, interpolation="none", origin="lower")
+# plt.subplot(212,sharex=ax,sharey=ax);
+# plt.imshow(tono2, interpolation="none", origin="lower");
+# plt.show()
