@@ -1,21 +1,13 @@
-# import cv2
-import numpy as np
-from scipy.io import loadmat
-# import glob
-import scipy.ndimage.filters as filt
-from imgca import exist, smooth, binArray
-#
-#
-import roipoly
-from scipy.ndimage import zoom, sobel
-# from scipy.ndimage.filters import gaussian_filter, gaussian_filter1d, maximum_filter
-from PIL import Image, ImageFilter
-import matplotlib.pyplot as plt
 import os
-# from copy import deepcopy
-# from skimage.measure import block_reduce
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.io import loadmat
+from scipy.ndimage import zoom, sobel
+import scipy.ndimage.filters as filt
+from PIL import Image, ImageFilter
 from skimage import feature
-# import scipy.ndimage as ndimage
+import roipoly
+from imgca import exist, smooth, binArray
 
 def inputAxis(axis):
     if isinstance(axis, str):
