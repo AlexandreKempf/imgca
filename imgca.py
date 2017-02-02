@@ -244,13 +244,16 @@ def deconvolve(data, dt, tau = 2):
     data = data[:,:,:,:,1:] - data[:,:,:,:,:-1] + (dt/tau)*data[:,:,:,:,:-1]
     return data
 
-def smooth(data, sigma, axis):
+def smooth(data, sigma, axis=[]):
     """
     Replace nan with 0 just for the gaussian filter, can be a problem if nan are not organized in time
     """
     mask = np.where(np.isnan(data))
     data[mask] = 0
-    data = filt.gaussian_filter1d(data, sigma, axis)
+    if isinstance(sigma, int):
+        data = filt.gaussian_filter1d(data, sigma, axis)
+    else:
+        data = filt.gaussian_filter(data, sigma)
     data[mask] *= np.nan
     return data
 
