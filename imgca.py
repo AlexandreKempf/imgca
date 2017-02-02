@@ -244,28 +244,26 @@ def deconvolve(data, dt, tau = 2):
     data = data[:,:,:,:,1:] - data[:,:,:,:,:-1] + (dt/tau)*data[:,:,:,:,:-1]
     return data
 
-def smooth(data, sigma, axis, dt = 1):
+def smooth(data, sigma, axis):
     """
-    Sigma est en nombre de points sauf si dt is specified
     Replace nan with 0 just for the gaussian filter, can be a problem if nan are not organized in time
     """
-    axis = inputAxis(axis)
     mask = np.where(np.isnan(data))
     data[mask] = 0
-    data = filt.gaussian_filter1d(data, sigma/dt, axis)
+    data = filt.gaussian_filter1d(data, sigma, axis)
     data[mask] *= np.nan
     return data
 
-def bin(data, axis, binstep, binsize, func=np.nanmean):
-    axis = inputAxis(axis)
+def binArray(data, axis, binstep, binsize, func=np.nanmean):
     dims = np.array(data.shape)
     argdims = np.arange(data.ndim)
     argdims[0], argdims[axis]= argdims[axis], argdims[0]
     data = data.transpose(argdims)
-    data = np.array([func(data[int(i*binstep):int(i*binstep+binsize),:,:,:,:],0) for i in np.arange(np.floor(dims[axis]/binstep))])
+    data = np.array([func(np.take(data,np.arange(int(i*binstep),int(i*binstep+binsize)),0),0) for i in np.arange(np.floor(dims[axis]/binstep))])
     data = data.transpose(argdims)
     # dt *= binstep
     return data
+
 
 def timecor(data, stims):
     if isinstance(stims, int):
@@ -281,18 +279,18 @@ def timecor(data, stims):
                 carre = bigcormat[i*nrep:i*nrep+nrep]
                 carre = carre[:,j*nrep:j*nrep+nrep]
                 result[exp,i,j] = np.nanmean(carre + np.diag(np.zeros(nrep)*np.nan))
-        result[0] += result[0].T - np.diag(result[0].diagonal())
+        result[exp] += result[exp].T - np.diag(result[exp].diagonal())
     return result
 
 
-dirpath = """/run/user/1001/gvfs/smb-share:server=157.136.60.205,share=rawdata/ANALYSIS/thibault/160517am_cage1_mouse2/"""
-data, neuropil, conds, stim, dt, expname = importRaw(dirpath)
-data, neuropil, rmcells = rmNeuropil(data, neuropil)
-data = dFoverF(data)
-data = format5D(data, dirpath, conds, dt)
-data, stim, dt = merge(data, stim, dt, data, stim, dt, method="minimal", axis=1)
-
-data = deconvolve(data, dt = dt, tau = 2)
-data = smooth(data, sigma = 0.03, axis = 4, dt = dt)
-data = bin(data, axis = 4, binstep = 2, binsize = 2, func = np.nanmean)
-timecormatrix = timecor(data, [5,15,25])
+# dirpath = """/run/user/1001/gvfs/smb-share:server=157.136.60.205,share=rawdata/ANALYSIS/thibault/160517am_cage1_mouse2/"""
+# data, neuropil, conds, stim, dt, expname = importRaw(dirpath)
+# data, neuropil, rmcells = rmNeuropil(data, neuropil)
+# data = dFoverF(data)
+# data = format5D(data, dirpath, conds, dt)
+# data, stim, dt = merge(data, stim, dt, data, stim, dt, method="minimal", axis=1)
+#
+# data = deconvolve(data, dt = dt, tau = 2)
+# data = smooth(data, sigma = 0.03, axis = 4, dt = dt)
+# data = binArray(data, axis = 4, binstep = 2, binsize = 2, func = np.nanmean)
+# timecormatrix = timecor(data, [5,15,25])
