@@ -62,11 +62,8 @@ def focusROI(data, vessels):
     data *= maskdata.reshape((1,1,maskdata.shape[0],maskdata.shape[1],1))
     return data, vessels
 
-def estimateBloodVessels(vessels, smoothfactor = 5, sigma=2):
-    vess = smooth(vessels,smoothfactor,0)
-    vess = smooth(vess,smoothfactor,1)
-    cannyvessels=feature.canny(vess, sigma=sigma)
-    return cannyvessels
+def estimateBloodVessels(vessels, sigma=2):
+    return feature.canny(vessels, sigma=sigma)
 
 def estimateActivity(data,vessels,stims):
     if isinstance(stims, int):
@@ -76,10 +73,9 @@ def estimateActivity(data,vessels,stims):
         img[i] = -data[stims[i],:,:,:,70:85].mean(3).mean(0)
     return img
 
-def plotActivity(data, stim, vessels, stimsel, smoothfactor = 5, sigma=2):
+def plotActivity(data, stim, vessels, stimsel, sigma=2, cmap = plt.cm.RdBu_r):
     imgs = estimateActivity(data,vessels,stimsel)
-    canny = estimateBloodVessels(vessels, smoothfactor, sigma)
-    cmap = plt.cm.RdBu_r
+    canny = estimateBloodVessels(vessels, sigma)
     cmap.set_bad('black',1.)
     for i in np.arange(imgs.shape[0]):
         img = zoom(imgs[i],(4,4), order=0)
@@ -96,10 +92,9 @@ def estimateTonotopy(data, vessels, stimsel, weights, smoothfactor = 5, sigma=2)
     return np.sum(imgs*weights,0)
 
 
-def plotTonotopy(data, vessels, stimsel, weights, smoothfactor = 5, sigma=2):
+def plotTonotopy(data, vessels, stimsel, weights, sigma=2, cmap = plt.cm.RdBu_r):
     img = estimateTonotopy(data,vessels,stimsel,weights)
-    canny = estimateBloodVessels(vessels, smoothfactor, sigma)
-    cmap = plt.cm.RdBu_r
+    canny = estimateBloodVessels(vessels, sigma)
     cmap.set_bad('black',1.)
     img = zoom(img,(4,4), order=0)
     img[canny] = np.nan
@@ -117,5 +112,5 @@ data = smooth(data,2,inputAxis("py"))
 data = dRoverR(data)
 data, vessels = focusROI(data, vessels)
 
-plotActivity(data,vessels,[0,1,2,3])
-plotTonotopy(data, vessels, stimsel= [1,2,3,4], weights=[-6,-2,2,6] , smoothfactor = 5, sigma=2)
+plotActivity(data, stim, vessels,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
+plotTonotopy(data, vessels, stimsel= [1,2,3,4], weights=[-6,-2,2,6], sigma=2, cmap = plt.cm.jet)
