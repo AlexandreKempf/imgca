@@ -258,13 +258,13 @@ def smooth(data, sigma, axis=[]):
     return data
 
 def binArray(data, axis, binstep, binsize, func=np.nanmean):
+    data = np.array(data)
     dims = np.array(data.shape)
     argdims = np.arange(data.ndim)
     argdims[0], argdims[axis]= argdims[axis], argdims[0]
     data = data.transpose(argdims)
-    data = np.array([func(np.take(data,np.arange(int(i*binstep),int(i*binstep+binsize)),0),0) for i in np.arange(np.floor(dims[axis]/binstep))])
-    data = data.transpose(argdims)
-    # dt *= binstep
+    data = [func(np.take(data,np.arange(int(i*binstep),int(i*binstep+binsize)),0),0) for i in np.arange(dims[axis]//binstep)]
+    data = np.array(data).transpose(argdims)
     return data
 
 
@@ -295,5 +295,7 @@ def timecor(data, stims):
 #
 # data = deconvolve(data, dt = dt, tau = 2)
 # data = smooth(data, sigma = 0.03, axis = 4, dt = dt)
+
+
 # data = binArray(data, axis = 4, binstep = 2, binsize = 2, func = np.nanmean)
 # timecormatrix = timecor(data, [5,15,25])

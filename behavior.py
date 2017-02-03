@@ -113,20 +113,20 @@ def importRaws(filesarray):
 
 
 
-
-# filepath = "/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/Behavior/Sebastian/Optogenetic setup/M1/15-06-02_O1*.DAT"
-filepath = "/home/alexandre/docs/code/dev/pkg_lab/beh/1/*.DAT"
-# filepath = "/home/alexandre/Desktop/*.DAT"
-filesarray = np.sort(glob.glob(filepath))
-stims, correct, events, ntrials, nlicks, tasktype, xpar, name, day = importRaws(filesarray)
-
-
-# colors = np.concatenate([np.repeat(["#000000"],29),["#ff0000", "#00ffff"]])
-for i in np.arange(np.sum(ntrials)):
-    n = len(events[i])
-    rd = int(xpar[0]["fix"]["RewardDelay"])
-    dots = events[i]
-    plt.plot(dots[dots<rd], np.repeat(i,np.sum(dots<rd)), '.b')
-    plt.plot(dots[dots>rd], np.repeat(i,np.sum(dots>rd)), '.r')
-
-plt.show()
+#
+# # filepath = "/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/Behavior/Sebastian/Optogenetic setup/M1/15-06-02_O1*.DAT"
+# filepath = "/home/alexandre/docs/code/dev/pkg_lab/beh/1/*.DAT"
+# # filepath = "/home/alexandre/Desktop/*.DAT"
+# filesarray = np.sort(glob.glob(filepath))
+# stims, correct, events, ntrials, nlicks, tasktype, xpar, name, day = importRaws(filesarray)
+#
+#
+# # colors = np.concatenate([np.repeat(["#000000"],29),["#ff0000", "#00ffff"]])
+# for i in np.arange(np.sum(ntrials)):
+#     n = len(events[i])
+#     rd = int(xpar[0]["fix"]["RewardDelay"])
+#     dots = events[i]
+#     plt.plot(dots[dots<rd], np.repeat(i,np.sum(dots<rd)), '.b')
+#     plt.plot(dots[dots>rd], np.repeat(i,np.sum(dots>rd)), '.r')
+#
+# plt.show()
