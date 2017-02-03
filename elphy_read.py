@@ -261,7 +261,7 @@ def ReadEpisode(f,SZ,PosMax):
         # different types of numbers, go the slow way
         # BEGIN OLD CODE
         Dy0[Ktype == 5] = 1
-        if nb_voie > 1:
+        if nbvoie > 1:
             raise NameError('not implemented yet')
         V = np.zeros(N)
         k=0
@@ -279,14 +279,13 @@ def ReadEpisode(f,SZ,PosMax):
         # go the fast way, load everything at once
         if Ktype[0]==5:
             w = fread(f, int(nbSamp),'f')
-            w = np.reshape(w, (int(AgSampleCount), int(nbSamp/AgSampleCount)))
         else:
             w = fread(f, int(nbSamp),'h')
-            w = np.reshape(w, (int(AgSampleCount), int(nbSamp/AgSampleCount)))
+        w = np.reshape(w, (int(nbSamp/AgSampleCount),int(AgSampleCount)))
         V = [[]]*nbvoie
         ChanMask -= 1
         for i in np.arange(nbvoie):
-            V[i] = np.ravel(w[ChanMask == i,:]*Dy0[i] + Y00[i])
+            V[i] = np.ravel(w[:,ChanMask == i]*Dy0[i] + Y00[i])
 
     # TODO:  test to know if all channels have the same size !! No need for the moment so I didn't code it
     return V, date
@@ -434,7 +433,7 @@ def Read(f):
         if ID == b'B_Ep':
             krec += 1
             a, b = ReadEpisode(f,SZ,posend)
-            recordings.append(a[0])
+            recordings.append(a)
             dates.append(b)
         elif ID == b'Vector':
             name, value = ReadVector(f,SZ,posend)
@@ -458,7 +457,7 @@ def Read(f):
                 None
 
         f.seek(posend)
-    return recordings, dates, vectors, menupar, xpar, epinfo
+    return np.transpose(recordings,(0,2,1)), dates, vectors, menupar, xpar, epinfo
 
 
 #
