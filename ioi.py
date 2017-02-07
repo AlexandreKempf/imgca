@@ -265,17 +265,17 @@ def applyTransform(img,M):
     return img
 
 
-dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
-data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-data = smooth(data,2,inputAxis("time"))
-data = smooth(data,2,inputAxis("px"))
-data = smooth(data,2,inputAxis("py"))
-data = dRoverR(data)
-data, vessels = focusROI(data, vessels)
-
-
-plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
-plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
+# dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
+# data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
+# data = smooth(data,2,inputAxis("time"))
+# data = smooth(data,2,inputAxis("px"))
+# data = smooth(data,2,inputAxis("py"))
+# data = dRoverR(data)
+# data, vessels = focusROI(data, vessels)
+#
+#
+# plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
+# plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
 #
 # dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
 # data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
