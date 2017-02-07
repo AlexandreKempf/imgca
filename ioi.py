@@ -39,7 +39,7 @@ def importRaw(dirpath, stims=[]):
     idx = np.array(np.ravel(conds["list"]["idx"])[0][0]-1)
     data = np.array([data["frame"][:, :, :, idx==sound] for sound in np.arange(len(stims))]).astype(float)
     data = data.transpose((0,4,1,2,3)) # transform to (stim, rep, px, py, t)
-    data = data[:,:,::-1,:,:]
+    # data = data[:,:,::-1,:,:]
     data -= np.min(data)
     data *= 255/np.max(data)
     px = int(data.shape[2]*4)
@@ -54,7 +54,7 @@ def dRoverR(data):
     return data
 
 def focusROI(data, vessels):
-    plt.imshow(vessels, origin="lower")
+    plt.imshow(vessels)
     plt.title("Left lick to create a ROI polygon ... then right click to finish !")
     roi = roipoly.roipoly(roicolor='r')
     mask = roi.getMask(vessels).astype(float)
@@ -86,11 +86,11 @@ def plotActivity(data, stim, vessels, stimsel, sigma=2, cmap = plt.cm.RdBu_r):
         img[canny] = np.nan
         plt.figure()
         plt.title(stim[stimsel[i]])
-        plt.imshow(img, origin="lower", interpolation="none", cmap = cmap)
+        plt.imshow(img, interpolation="none", cmap = cmap)
         plt.clim(np.nanpercentile(img,10),np.nanpercentile(img,99));
     plt.show()
 
-def estimateTonotopy(data, vessels, stimsel=[1,2,3,4], weights=[-6,-2,2,6], smoothfactor = 5, sigma=2):
+def estimateTonotopy(data, vessels, stimsel=[1,2,3,4], weights=[-6,-2,2,6]):
     imgs = estimateActivity(data, vessels, stimsel)
     weights = np.reshape(weights, (len(weights), 1, 1))
     return np.sum(imgs*weights,0)
@@ -102,7 +102,7 @@ def plotTonotopy(data, vessels, stimsel=[1,2,3,4], weights=[-6,-2,2,6], sigma=2,
     cmap.set_bad('black',1.)
     img = zoom(img,(4,4), order=0)
     img[canny] = np.nan
-    plt.imshow(img, origin="lower", interpolation="none", cmap = cmap)
+    plt.imshow(img, interpolation="none", cmap = cmap)
     plt.clim(np.nanpercentile(img,1),np.nanpercentile(img,99));
     plt.show()
 
@@ -223,10 +223,10 @@ def findTransform(data, vessels, data2, vessels2, shear=False, scale=False):
 
     fig = plt.figure()
     ax = fig.add_subplot(2,1,1)
-    ax.imshow(img1, interpolation="none", origin="lower")
+    ax.imshow(img1, interpolation="none")
     plt.title('Please click 3 points here ... ')
     ax1 = fig.add_subplot(2,1,2)
-    ax1.imshow(img2, interpolation="none", origin="lower")
+    ax1.imshow(img2, interpolation="none")
     plt.title('... Then click 3 points here !')
 
     global coords
@@ -265,13 +265,17 @@ def applyTransform(img,M):
     return img
 
 
-# dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/M07/20160106"
-# data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data = smooth(data,2,inputAxis("time"))
-# data = smooth(data,2,inputAxis("px"))
-# data = smooth(data,2,inputAxis("py"))
-# data = dRoverR(data)
-# data, vessels = focusROI(data, vessels)
+dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
+data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
+data = smooth(data,2,inputAxis("time"))
+data = smooth(data,2,inputAxis("px"))
+data = smooth(data,2,inputAxis("py"))
+data = dRoverR(data)
+data, vessels = focusROI(data, vessels)
+
+
+plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
+plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
 #
 # dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
 # data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
