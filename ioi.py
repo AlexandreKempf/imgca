@@ -266,22 +266,18 @@ def applyTransform(img,M):
 
 
 # dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
+# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Al001/03_Mouse3"""
 # data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data = smooth(data,2,inputAxis("time"))
-# data = smooth(data,2,inputAxis("px"))
-# data = smooth(data,2,inputAxis("py"))
+# data = smooth(data,[0,0,2,2,2])
 # data = dRoverR(data)
 # data, vessels = focusROI(data, vessels)
 #
-#
 # plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
 # plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
-#
+
 # dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
 # data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data2 = smooth(data2,2,inputAxis("time"))
-# data2 = smooth(data2,2,inputAxis("px"))
-# data2 = smooth(data2,2,inputAxis("py"))
+# data2 = smooth(data2,[0,0,2,2,2])
 # data2 = dRoverR(data2)
 # data2, vessels2 = focusROI(data2, vessels2)
 #

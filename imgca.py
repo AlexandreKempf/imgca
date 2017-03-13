@@ -244,16 +244,13 @@ def deconvolve(data, dt, tau = 2):
     data = data[:,:,:,:,1:] - data[:,:,:,:,:-1] + (dt/tau)*data[:,:,:,:,:-1]
     return data
 
-def smooth(data, sigma, axis=[]):
+def smooth(data, sigma):
     """
     Replace nan with 0 just for the gaussian filter, can be a problem if nan are not organized in time
     """
     mask = np.where(np.isnan(data))
     data[mask] = 0
-    if isinstance(sigma, int):
-        data = filt.gaussian_filter1d(data, sigma, axis)
-    else:
-        data = filt.gaussian_filter(data, sigma)
+    data = filt.gaussian_filter(data, sigma)
     data[mask] *= np.nan
     return data
 
@@ -294,7 +291,7 @@ def timecor(data, stims):
 # data, stim, dt = merge(data, stim, dt, data, stim, dt, method="minimal", axis=1)
 #
 # data = deconvolve(data, dt = dt, tau = 2)
-# data = smooth(data, sigma = 0.03, axis = 4, dt = dt)
+# data = smooth(data, sigma = (0,0,0,0,0.03))
 
 
 # data = binArray(data, axis = 4, binstep = 2, binsize = 2, func = np.nanmean)
