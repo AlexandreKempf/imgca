@@ -16,7 +16,7 @@ def inputAxis(axis):
     else:
         return int(axis)
 
-def importRaw(dirpath, stims=[]):
+def importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"]):
     vessels = np.array(Image.open(exist(dirpath,"*.tif"))).astype(float)
     if vessels.ndim == 3:
         vessels = vessels[:,:,0]
@@ -27,10 +27,7 @@ def importRaw(dirpath, stims=[]):
     vessels *= 255/np.max(vessels)
     vessels = vessels.astype(float)
     name = os.path.basename(dirpath)
-    if len(stims)==0:
-        stims= np.array(["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-    else:
-        stims = np.array(stims)
+    stims = np.array(stims)
     datafile = exist(dirpath, """*data.mat""")
     stimfile = exist(dirpath, """*.stim.mat""")
     data = loadmat(datafile, mat_dtype=True)
@@ -265,31 +262,32 @@ def applyTransform(img,M):
     return img
 
 
-# dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
-# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Al001/04_Mouse4"""
+# # dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
+# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Axons/170621_souris3/"""
 # data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data = smooth(data,[0,0,2,2,0])
-# # data = dRoverR(data)
+# data = smooth(data,[0,0,4,4,0])
+# data = dRoverR(data)
 # # data, vessels = focusROI(data, vessels)
 #
 #
-# # With olds experiments where time courses are not saved, we need to work with only 2 images (response, baseline)
-# datum = (data[:,:,:,:,0] - data[:,:,:,:,1]) / data[:,:,:,:,1]
-# datum = datum.mean(1)
-# ax = plt.subplot(121);
-# plt.imshow(zoom(datum[0],4));
-# plt.subplot(122, sharex=ax, sharey=ax);
-# plt.imshow(vessels, cmap = "Greys_r");
-# plt.show()
 #
+# # # With olds experiments where time courses are not saved, we need to work with only 2 images (response, baseline)
+# # datum = (data[:,:,:,:,0] - data[:,:,:,:,1]) / data[:,:,:,:,1]
+# # datum = datum.mean(1)
+# # ax = plt.subplot(121);
+# # plt.imshow(zoom(datum[0],4));
+# # plt.subplot(122, sharex=ax, sharey=ax);
+# # plt.imshow(vessels, cmap = "Greys_r");
+# # plt.show()
 #
-#
-#
-
-
-
+# plt.imshow(vessels, cmap= plt.cm.Greys_r);plt.show()
 # plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
 # plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
+#
+#
+
+
+
 
 # dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
 # data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
