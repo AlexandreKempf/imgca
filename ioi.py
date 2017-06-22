@@ -266,12 +266,28 @@ def applyTransform(img,M):
 
 
 # dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
-# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Al001/03_Mouse3"""
+# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Al001/04_Mouse4"""
 # data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data = smooth(data,[0,0,2,2,2])
-# data = dRoverR(data)
-# data, vessels = focusROI(data, vessels)
+# data = smooth(data,[0,0,2,2,0])
+# # data = dRoverR(data)
+# # data, vessels = focusROI(data, vessels)
 #
+#
+# # With olds experiments where time courses are not saved, we need to work with only 2 images (response, baseline)
+# datum = (data[:,:,:,:,0] - data[:,:,:,:,1]) / data[:,:,:,:,1]
+# datum = datum.mean(1)
+# ax = plt.subplot(121);
+# plt.imshow(zoom(datum[0],4));
+# plt.subplot(122, sharex=ax, sharey=ax);
+# plt.imshow(vessels, cmap = "Greys_r");
+# plt.show()
+#
+#
+#
+#
+
+
+
 # plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
 # plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
 

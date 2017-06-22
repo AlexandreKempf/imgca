@@ -460,8 +460,6 @@ def Read(f):
     return np.transpose(recordings,(0,2,1)), dates, vectors, menupar, xpar, epinfo
 
 
-#
-# # f = open("/run/user/1001/gvfs/smb-share:server=157.136.60.205,share=rawdata/ANALYSIS/sebastian/151127_C06M1_D2/151127_C06M1_D2_Depth180/Depth180.DAT","rb")
-# f=open("/home/alexandre/test.DAT",'rb')
+
+# f=open("1649F_CXG2.DAT",'rb')
 # recordings, dates, vectors, menupar, xpar, epinfo = Read(f)
-# print(xpar)
