@@ -39,15 +39,15 @@ def inputAxis(axis):
         return int(axis)
 
 def importRaw(dirpath):
-    if dirpath[-1]=="/":
-        dirpath = dirpath[:-1]
+    if dirpath[-1]!="/":
+        dirpath = dirpath + "/"
 
     ## Found files of interest (data file & elphy parameter file & stimulation file)
     matpath = exist(dirpath, "*signals.mat")
     stimpath = exist(dirpath, "*.stim")
 
     ## Load the expname
-    expname = np.array([os.path.basename(dirpath)])
+    expname = np.array([os.path.basename(dirpath[:-1])])
 
     ## Load the stims
     infofile = open(stimpath, "r")
@@ -73,8 +73,8 @@ def importRaw(dirpath):
 
     dt = a['dt'][0][0]
     dt = dt+dt*0.0016  # compensation for mesc delai
-    data = data[:,:,:,3:] # compensation for elphy reaction time
-    neuropil = neuropil[:,:,:,3:]
+    data = data[:,:,:,int(round(0.095/dt)):] # compensation for elphy reaction time
+    neuropil = neuropil[:,:,:,int(round(0.095/dt)):]
 
     if a['conds'].shape[1] > 1 : #some experiments with 1 stim per trial have problem with the transpose
         conds = a['conds'].T - 1
@@ -86,20 +86,13 @@ def importRaw(dirpath):
 
 def rmNeuropil(data, neuropil, correction=0.7):
     # remove the neurons without neuropil estimation
-    rmcell0 = np.where(np.isnan(neuropil.mean(2).mean(0))==True)[0]
-    data = np.delete(data,rmcell0,1)
-    neuropil = np.delete(neuropil,rmcell0,1)
+    rmcell = np.where(np.sum(np.isnan(neuropil.reshape((data.shape[1],-1))),1)!=0)[0]
+    data = np.delete(data,rmcell,1)
+    neuropil = np.delete(neuropil,rmcell,1)
 
     # neuropil correction
     data -= correction*neuropil
-
-    #remove neurons with negative values after correction
-    rmcell1 = np.where(data.min(2).min(0)<=0)[0]
-    data=np.delete(data,rmcell1,1)
-    neuropil=np.delete(neuropil,rmcell1,1)
-
-    rmcells = np.concatenate([rmcell0, rmcell1])
-    return data, neuropil, rmcells
+    return data, neuropil, rmcell
 
 
 def dFoverF(data, sizebin=500, sizegauss=500, percentile=3):
@@ -117,7 +110,6 @@ def dFoverF(data, sizebin=500, sizegauss=500, percentile=3):
     xp = np.arange(data2.shape[2])/data2.shape[2]
     baseline = np.array([np.interp(x,xp,data2[0,i,:]) for i in np.arange(ncell)]).reshape((1,ncell,-1))
     baseline = baseline.reshape((nexp, ncell, ntrial, nt))
-
     # apply the baseline scaling
     data -= baseline
     data *= 1./baseline
@@ -129,10 +121,16 @@ def format5D(data, dirpath, conds, dt, method="complete", befDuration=0.5, aftDu
 
     datfile = exist(dirpath, "*.DAT")
     recordings, dates, vectors, menupar, xpar, epinfo = elphy_read.Read(open(datfile,'rb'))
-    NStim= int(xpar["fix"]["NStim"])
-    StimDelay = float(xpar["fix"]["StimDelay"])/1000
-    TrialInterval = float(xpar["fix"]["TrialInterval"])/1000
-    SDuration = float(xpar["fix"]["SDuration"])/1000
+    try :
+        NStim= int(xpar["fix"]["NStim"])
+        StimDelay = float(xpar["fix"]["StimDelay"])/1000
+        TrialInterval = float(xpar["fix"]["TrialInterval"])/1000
+        SDuration = float(xpar["fix"]["SDuration"])/1000
+    except:
+        NStim= len(np.unique(conds))
+        StimDelay = float(menupar["StimDelay"])/1000
+        TrialInterval = float(menupar["TrialInterval"])/1000
+        SDuration = float(menupar["SDuration"])/1000
 
     starts = (StimDelay + np.arange(conds.shape[1])*TrialInterval)/dt
     stimrep = np.array([np.sum(conds==i) for i in np.sort(np.unique(conds))])
@@ -168,7 +166,7 @@ def solveDt(data1,dt1,data2,dt2):
         data2 = np.delete(data2, uniqtime[double > 1], axis=4)
     elif dt1 < dt2 :
         dt = dt2
-        time = np.arange(data.shape[4]) * dt1 / dt
+        time = np.arange(data1.shape[4]) * dt1 / dt
         uniqtime, double = np.unique(np.rint(time), return_counts=True)
         data1 = np.delete(data1, uniqtime[double > 1], axis=4)
     else:
@@ -241,7 +239,7 @@ def merge(data1, stim1, dt1, data2, stim2, dt2, method="complete", axis = 0):
 
 def deconvolve(data, dt, tau = 2):
     "Temporal deconvolution of the signal with an exponential with TAU in seconds"
-    data = data[:,:,:,:,1:] - data[:,:,:,:,:-1] + (dt/tau)*data[:,:,:,:,:-1]
+    data = data[...,1:] - data[...,:-1] + (dt/tau)*data[...,:-1]
     return data
 
 def smooth(data, sigma):
@@ -283,16 +281,26 @@ def timecor(data, stims):
     return result
 
 
+# IMPORT
 # dirpath = """/run/user/1001/gvfs/smb-share:server=157.136.60.205,share=rawdata/ANALYSIS/thibault/160517am_cage1_mouse2/"""
-# data, neuropil, conds, stim, dt, expname = importRaw(dirpath)
-# data, neuropil, rmcells = rmNeuropil(data, neuropil)
-# data = dFoverF(data)
-# data = format5D(data, dirpath, conds, dt)
-# data, stim, dt = merge(data, stim, dt, data, stim, dt, method="minimal", axis=1)
+# data, neuropil, conds, stim, dt, expname = ca.importRaw(dirpath)
+# nexp, ncell, nstim, nt = data.shape
+# plt.plot(data[0].mean(0).T);
 #
-# data = deconvolve(data, dt = dt, tau = 2)
-# data = smooth(data, sigma = (0,0,0,0,0.03))
-
-
-# data = binArray(data, axis = 4, binstep = 2, binsize = 2, func = np.nanmean)
-# timecormatrix = timecor(data, [5,15,25])
+# data, neuropil, rmcells1 = ca.rmNeuropil(data, neuropil)
+# plt.plot(data[0].mean(0).T);
+#
+# data = ca.dFoverF(data)
+# rmcells2 = np.where(data[0].min(1).min(1)<-1)[0]
+# data = np.delete(data, rmcells2, 1) # remove bugs and biais
+# rmcells2 = np.array([i+np.sum(rmcells1<=i) for i in rmcells2])
+# rmcells = np.concatenate([rmcells1, rmcells2])
+# plt.plot(data[0].mean(0).T);
+#
+# data = ca.format5D(data, dirpath[exp], conds, dt, method="minimal")
+# data -= data[:,:,:,:,:15].mean(-1, keepdims=True)
+# plt.plot(data[0].mean(0).mean(1).T);
+#
+# datasavepath = '/run/user/1000/gvfs/smb-share:server=157.136.60.15,share=eqbrice/Alex/model_clust_loc' +"/cortex/" + expname[0]
+# np.save(datasavepath + "_rawdata.npy", data)
+# np.save(datasavepath + "_rmneurons.npy", rmcells)

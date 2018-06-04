@@ -261,15 +261,14 @@ def applyTransform(img,M):
     img += np.nanmin(img)
     return img
 
-
+#
 # # dirpath= "/home/alexandre/docs/code/dev/pkg_lab/ioi/C33M2/20170201"
-# dirpath= """/run/user/1001/gvfs/smb-share:server=157.136.60.15,share=eqbrice/IntrinsicImaging/Alexandre/Axons/170621_souris3/"""
+# dirpath= """/run/user/1000/gvfs/smb-share:server=157.136.60.11,share=eqbrice/Alex/IOI/1802_A1V1/180305_mouse1/"""
 # data, stim, vessels = importRaw(dirpath, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
 # data = smooth(data,[0,0,4,4,0])
 # data = dRoverR(data)
 # # data, vessels = focusROI(data, vessels)
-#
-#
+# # %matplotlib qt
 #
 # # # With olds experiments where time courses are not saved, we need to work with only 2 images (response, baseline)
 # # datum = (data[:,:,:,:,0] - data[:,:,:,:,1]) / data[:,:,:,:,1]
@@ -282,30 +281,26 @@ def applyTransform(img,M):
 #
 # plt.imshow(vessels, cmap= plt.cm.Greys_r);plt.show()
 # plotActivity(data,stim,vessels,stimsel=[0,1,2,3])
-# plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,2,6])
+# plotTonotopy(data, vessels, stimsel=[1,2,3], weights=[-4,-1,3])
 #
-#
-
-
-
-
-# dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
-# data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
-# data2 = smooth(data2,[0,0,2,2,2])
-# data2 = dRoverR(data2)
-# data2, vessels2 = focusROI(data2, vessels2)
-#
-# plotActivity(data, stim, vessels,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
-# plotActivity(data2, stim2, vessels2,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
-#
-# M = findTransform(data, vessels, data2, vessels2, shear=False, scale=False)
-#
-# tono1 = estimateTonotopy(data, vessels)
-# tono2 = estimateTonotopy(data2, vessels2)
-# tono2 = applyTransform(tono2,M)
-#
-# ax = plt.subplot(211);
-# plt.imshow(tono1, interpolation="none", origin="lower")
-# plt.subplot(212,sharex=ax,sharey=ax);
-# plt.imshow(tono2, interpolation="none", origin="lower");
-# plt.show()
+# #
+# # # dirpath2 = "/home/alexandre/docs/code/dev/pkg_lab/ioi/seb"
+# # # data2, stim2, vessels2 = importRaw(dirpath2, stims=["Whitenoise","4kHz", "8kHz", "16kHz", "32kHz"])
+# # # data2 = smooth(data2,[0,0,2,2,2])
+# # # data2 = dRoverR(data2)
+# # # data2, vessels2 = focusROI(data2, vessels2)
+# # #
+# # # plotActivity(data, stim, vessels,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
+# # # plotActivity(data2, stim2, vessels2,[1,2,3,4], sigma=2, cmap = plt.cm.jet)
+# # #
+# # # M = findTransform(data, vessels, data2, vessels2, shear=False, scale=False)
+# # #
+# # # tono1 = estimateTonotopy(data, vessels)
+# # # tono2 = estimateTonotopy(data2, vessels2)
+# # # tono2 = applyTransform(tono2,M)
+# # #
+# # # ax = plt.subplot(211);
+# # # plt.imshow(tono1, interpolation="none", origin="lower")
+# # # plt.subplot(212,sharex=ax,sharey=ax);
+# # # plt.imshow(tono2, interpolation="none", origin="lower");
+# # # plt.show()
